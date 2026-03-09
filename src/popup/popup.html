@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>ChirpyPaste</h1>
+    <div id="status" class="status listening">
+      <span class="spinner"></span>
+      <span id="status-text">Listening...</span>
+    </div>
+    <div id="timer" class="timer">0:00</div>
+    <button id="btn-stop" class="btn btn-stop">Stop &amp; Decode</button>
+    <div id="result" class="result hidden">
+      <pre id="result-text"></pre>
+      <button id="btn-copy" class="btn btn-copy hidden">Copy to Clipboard</button>
+    </div>
+    <div id="error" class="error hidden"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "chirpypaste",
+  "version": "1.0.0",
+  "description": "Browser extension to decode Chirpy audio transmissions and paste into text fields",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}

@@ -1,53 +1,40 @@
-# Chirpy RX decoder for the Sensor Watch
+# ChirpyPaste
 
-This is a browser-based app to receive and decode data transmissions
-beeped out by faces like the `activity_face` or `chirpy_demo_face` on Joey Castillo's
-[Sensor Watch](https://www.sensorwatch.net/).
+Browser extension for Firefox and Chromium that decodes [Chirpy](https://www.sensorwatch.net/) audio transmissions from a Sensor Watch and pastes the decoded data into text fields.
 
-You can use the live app here: https://jealousmarkup.xyz/off/chirpy/rx
+## How it works
 
-This is what a Chirpy data transmission looks and sounds like:
+1. Focus a text input on any web page
+2. Press **Alt+Shift+C** (or click the extension icon)
+3. The popup opens and immediately starts recording from your microphone
+4. Play a Chirpy transmission from your Sensor Watch
+5. The extension auto-detects the end of the message, decodes it, pastes the text into the input field, and closes
 
-https://user-images.githubusercontent.com/22029901/214139415-388a9de6-160e-4004-a579-6b523cd4701a.mp4
+You can also click **Stop & Decode** to manually stop recording and decode whatever was captured.
 
-## Building and running
+## Install from release
 
-The app is in `src/chirpy-rx`.
+1. Download the latest release zip for your browser from the [Releases](../../releases) page
+2. **Chrome/Chromium:** Go to `chrome://extensions`, enable Developer Mode, click "Load unpacked", select the unzipped folder
+3. **Firefox:** Go to `about:debugging#/runtime/this-firefox`, click "Load Temporary Add-on", select `manifest.json` from the unzipped folder
 
-To build it you will need Node.js. I'm using v16.13, but most
-likely any nearby or newer version will work. To restore packages
-you will need to use either yarn or npm. I recommend yarn.
+## Build from source
 
-To build and run the web app after a fresh checkout, go to `src/chirpy-rx`
-and run:
+Requires Node.js 18+.
 
+```sh
+npm install
+node build.js --target chrome    # or firefox
 ```
-yarn
-node build.js --watch
-```
 
-This starts a local web server listening at `localhost:8080`. Open
-this URL in your browser to run the app.
+Output goes to `dist/chrome/` or `dist/firefox/`. Load the output folder as an unpacked extension.
 
-The second command above includes a folder watcher with live reload, so any files you change in
-`src` will trigger a rebuild and automatically reload the app in the browser.
+### Build flags
 
-## Lab tools
+- `--prod` — Minify, no sourcemaps
+- `--target chrome|firefox` — Build for a specific browser (default: both)
+- `--watch` — Watch mode for development
 
-There are two other experimental projects in the src folder. I've been using these to
-empirically find the frequencies and transmission rates at which data chirping works
-reliably with the watch's piezo buzzer.
+## License
 
-`lab-arduino-tx` is a program for an Arduino Nano with
-a watch's back side attached. I used it to quickly generate transmissions with
-various settings without the need to take a watch apart every time. The program is built
-with Platform.io.
-
-In practice the setup looks like this:
-
-![Arduino Nano with the piezo buzzer from a Casio watch](https://user-images.githubusercontent.com/22029901/214140329-b893ca5e-d72c-460c-9a03-eeb7304ecac4.jpg)
-
-`lab-webapp-rx` is the app I used to analyze audio from recorded transmissions. It
-is a precursor to the final web app. It generates cool spectrograms like this:
-
-![chirpy-spectrogram](https://user-images.githubusercontent.com/22029901/214140657-b1e70b20-48a3-4060-9e47-8b6bf2ef0261.jpg)
+MIT — see [LICENSE.md](LICENSE.md)
