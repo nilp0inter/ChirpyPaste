@@ -3,7 +3,7 @@
   "name": "FESKPaste",
   "version": "1.0.0",
   "description": "Decode FESK audio transmissions and paste them into text fields",
-  "permissions": ["microphone", "storage", "clipboardWrite"],
+  "permissions": ["storage", "clipboardWrite"],
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true

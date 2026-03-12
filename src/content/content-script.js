@@ -1,4 +1,5 @@
 let lastFocusedElement = null;
+let pendingInsert = null;
 
 function isTextInput(el) {
   if (!el) return false;
@@ -12,16 +13,34 @@ function isTextInput(el) {
   return false;
 }
 
+function insertText(el, text, sendEnter) {
+  el.focus();
+  el.select();
+  document.execCommand("insertText", false, text);
+
+  if (sendEnter) {
+    el.dispatchEvent(new KeyboardEvent("keydown", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
+    el.dispatchEvent(new KeyboardEvent("keypress", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
+    el.dispatchEvent(new KeyboardEvent("keyup", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
+    if (el.form) el.form.requestSubmit();
+  }
+}
+
 document.addEventListener("focusin", (e) => {
   if (isTextInput(e.target)) {
     lastFocusedElement = e.target;
+
+    if (pendingInsert) {
+      const { text, sendEnter } = pendingInsert;
+      pendingInsert = null;
+      insertText(e.target, text, sendEnter);
+    }
   }
 }, true);
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type !== "feskpaste-insert") return;
 
-  const text = msg.text;
   const el = lastFocusedElement;
 
   if (!el || !document.body.contains(el)) {
@@ -29,32 +48,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return;
   }
 
+  // Store as pending — insertion happens when focus returns to the element
+  pendingInsert = { text: msg.text, sendEnter: msg.sendEnter };
+
+  // Also try immediate insertion (works in Firefox where focus isn't blocked)
   try {
-    el.focus();
-
-    if (el.isContentEditable) {
-      document.execCommand("insertText", false, text);
-    } else {
-      const start = el.selectionStart || 0;
-      const end = el.selectionEnd || 0;
-      const before = el.value.substring(0, start);
-      const after = el.value.substring(end);
-      el.value = before + text + after;
-      el.selectionStart = el.selectionEnd = start + text.length;
-
-      el.dispatchEvent(new Event("input", {bubbles: true}));
-      el.dispatchEvent(new Event("change", {bubbles: true}));
-    }
-
-    if (msg.sendEnter) {
-      el.dispatchEvent(new KeyboardEvent("keydown", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
-      el.dispatchEvent(new KeyboardEvent("keypress", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
-      el.dispatchEvent(new KeyboardEvent("keyup", {key: "Enter", code: "Enter", keyCode: 13, bubbles: true}));
-      if (el.form) el.form.requestSubmit();
-    }
-
-    sendResponse({success: true});
-  } catch (err) {
-    sendResponse({success: false, reason: err.message});
+    insertText(el, msg.text, msg.sendEnter);
+    pendingInsert = null;
+  } catch (e) {
+    // Deferred insertion will handle it
   }
+
+  sendResponse({success: true});
 });
