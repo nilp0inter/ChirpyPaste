@@ -39,11 +39,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "feskpaste@nilp0inter.com",
-      "strict_min_version": "140.0",
+      "strict_min_version": "142.0",
       "data_collection_permissions": {
-        "required": false,
-        "collected": false,
-        "description": "FESKPaste processes audio locally in the browser. No data is collected, stored, or transmitted."
+        "required": ["none"],
+        "optional": []
       }
     }
   }
