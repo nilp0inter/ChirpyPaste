@@ -2,6 +2,10 @@
 
 Browser extension for Firefox and Chromium that decodes [FESK](https://www.sensorwatch.net/) audio transmissions from a Sensor Watch and pastes the decoded data into text fields.
 
+## Demo
+
+[![FESKPaste Demo](https://img.youtube.com/vi/Nnia2b510nI/0.jpg)](https://www.youtube.com/shorts/Nnia2b510nI)
+
 ## How it works
 
 1. Focus a text input on any web page
